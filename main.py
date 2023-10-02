@@ -154,12 +154,12 @@ with conn.cursor() as cur:
         :param gender: пол искомого пользователя (мужчина, девушка, пара)
         :param age: возраст искомого пользователя
         :param preferences: предпочтения искомого пользователя (мужчина, девушка, пара)
-        :return: список словарей подходящих пользователей
+        :return: список словарей подходящих пользователей (ник, возраст, информация о себе, город, фото)
         """
         with conn.cursor(cursor_factory=psycopg2.extras.DictCursor) as cur:
 
             cur.execute(
-                """SELECT nick_name, age, about_me, city FROM users WHERE gender = %s AND age = %s AND preferences = %s""",
+                """SELECT nick_name, age, about_me, city, photo FROM users WHERE gender = %s AND age = %s AND preferences = %s""",
                 (gender, age, preferences))
             res = cur.fetchall()
             res_list = []
@@ -174,3 +174,5 @@ with conn.cursor() as cur:
     user_preferences = 'мужчина'
 
     print(request(user_gender, user_age, user_preferences))
+
+
