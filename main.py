@@ -34,9 +34,9 @@ def add_user(users_id: int, name: str, nick_name, age: int, gender: str, photo, 
         return 'Новый пользователь добавлен'
 
 
-user_id = 55555555555555
-user_name = 'Маша'
-user_nick = 'masha@'
+user_id = 333333333333333
+user_name = 'Adia'
+user_nick = 'ma@'
 user_age = 25
 user_gender = 'девушка'
 user_photo = ''
@@ -176,4 +176,24 @@ user_gender = 'девушка'
 user_age = 25
 user_preferences = 'мужчина'
 
+
 # print(request(user_gender, user_age, user_preferences))
+
+def search(name):
+    with conn.cursor(cursor_factory=psycopg2.extras.DictCursor) as cur:
+        cur.execute(
+            """SELECT gender, age, preferences, city FROM users WHERE name = %s""", (name,))
+        res = cur.fetchall()
+        res_list = []
+        for row in res:
+            res_list.append(dict(row))
+            return res_list
+
+
+user_name = 'Adia'
+
+
+print(search(user_name))
+
+
+
