@@ -1,3 +1,5 @@
+from pprint import pprint
+
 import psycopg2.extras
 from psycopg2.errors import UniqueViolation
 import pandas as pd
@@ -34,15 +36,15 @@ def add_user(users_id: int, name: str, nick_name, age: int, gender: str, photo, 
         return 'Новый пользователь добавлен'
 
 
-user_id = 333333333333333
-user_name = 'Adia'
+user_id = 77777777777
+user_name = 'Маша'
 user_nick = 'ma@'
-user_age = 25
+user_age = 29
 user_gender = 'девушка'
 user_photo = ''
 user_about_me = 'нравится слушать музыку'
 user_preferences = 'мужчина'
-user_city = 'Ростов'
+user_city = 'Калуга'
 
 # print(add_user(user_id, user_name, user_nick, user_age, user_gender, user_photo, user_about_me, user_preferences,
 #                user_city))
@@ -169,15 +171,15 @@ def request(gender: str, age: int, preferences: str):
         res_list = []
         for row in res:
             res_list.append(dict(row))
-            return res_list
+        return res_list
 
 
 user_gender = 'девушка'
-user_age = 25
+user_age = 31
 user_preferences = 'мужчина'
 
+pprint(request(user_gender, user_age, user_preferences))
 
-# print(request(user_gender, user_age, user_preferences))
 
 def search(name):
     with conn.cursor(cursor_factory=psycopg2.extras.DictCursor) as cur:
@@ -187,13 +189,9 @@ def search(name):
         res_list = []
         for row in res:
             res_list.append(dict(row))
-            return res_list
+        return res_list
 
 
 user_name = 'Adia'
 
-
-print(search(user_name))
-
-
-
+# pprint(search(user_name))
