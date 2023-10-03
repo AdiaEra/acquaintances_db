@@ -1,12 +1,12 @@
 import psycopg2
 
 with psycopg2.connect(database="acquaintances_db", user="postgres", password="Hun$917&305TpS") as conn:
-    def delete_db():
-        """
-        Функция, удаляющая таблицы базы данных
-        :return: БД удалена
-        """
-        with conn.cursor() as cur:
+    with conn.cursor() as cur:
+        def delete_db():
+            """
+            Функция, удаляющая таблицы базы данных
+            :return: БД удалена
+            """
             cur.execute("""
             DROP TABLE blacklist;
             DROP TABLE user_liked;
@@ -16,15 +16,14 @@ with psycopg2.connect(database="acquaintances_db", user="postgres", password="Hu
             """)
             return 'БД удалена'
 
-    # print(delete_db())
-    conn.commit()
+        # print(delete_db())
+        conn.commit()
 
-    def create_db():
-        """
-        Функция, создающая структуру БД (таблицы)
-        :return: База данных создана
-        """
-        with conn.cursor() as cur:
+        def create_db():
+            """
+            Функция, создающая структуру БД (таблицы)
+            :return: База данных создана
+            """
             cur.execute("""
                 CREATE TABLE IF NOT EXISTS users(
                     users_id BIGINT PRIMARY KEY,
@@ -57,5 +56,5 @@ with psycopg2.connect(database="acquaintances_db", user="postgres", password="Hu
                 """)
             return 'База данных создана'
 
-    # print(create_db())
-    conn.commit()
+        # print(create_db())
+        conn.commit()
