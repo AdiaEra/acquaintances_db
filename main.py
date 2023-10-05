@@ -36,14 +36,14 @@ def add_user(users_id: int, name: str, nick_name, age: int, gender: str, photo, 
         return 'Новый пользователь добавлен'
 
 
-user_id = 77777777777
-user_name = 'Маша'
+user_id = 11113
+user_name = 'Миша'
 user_nick = 'ma@'
-user_age = 29
-user_gender = 'девушка'
+user_age = 31
+user_gender = 'мужчина'
 user_photo = ''
 user_about_me = 'нравится слушать музыку'
-user_preferences = 'мужчина'
+user_preferences = 'девушка'
 user_city = 'Калуга'
 
 # print(add_user(user_id, user_name, user_nick, user_age, user_gender, user_photo, user_about_me, user_preferences,
@@ -78,8 +78,9 @@ def reviews(users_id: int, description: str):
         return 'Информация в таблицу отзывов и предложений внесена'
 
 
-user_id = 55555555555555
+user_id = 111
 user_description = 'Ничего так приложение'
+
 # print(reviews(user_id, user_description))
 conn.commit()
 
@@ -105,8 +106,9 @@ def liked(users_id: int, liked_id: int):
         return 'Понравившийся пользователь добавлен'
 
 
-user_id = 55555555555555
+user_id = 111
 like_id = 44444444444444
+
 # print(liked(user_id, like_id))
 conn.commit()
 
@@ -132,8 +134,9 @@ def not_liked(users_id: int, not_liked_id: int):
         return 'Пользователь, которые не нравится добавлен'
 
 
-user_id = 55555555555555
+user_id = 111
 not_like_id = 111111111111111
+
 # print(not_liked(user_id, not_like_id))
 conn.commit()
 
@@ -147,41 +150,55 @@ def delete_user(users_id: int):
     with conn.cursor() as cur:
         cur.execute("""
                     DELETE FROM users WHERE users_id = %s;""", (users_id,))
-        return 'Пользователя удалён из базы данных'
+        return 'Пользователь удалён из базы данных'
 
 
-user_id = 55555555555555
+user_id = 333333333
+
 # print(delete_user(user_id))
 conn.commit()
 
 
-def request(gender: str, age: int, preferences: str):
+def request(gender: str, age: int, preferences: str, name: str):
     """
-    Функция запроса вывода ника, пола, возраста и предпочтений понравившегося пользователя
-    :param gender: пол искомого пользователя (мужчина, девушка, пара)
-    :param age: возраст искомого пользователя
-    :param preferences: предпочтения искомого пользователя (мужчина, девушка, пара)
-    :return: список словарей подходящих пользователей (ник, возраст, информация о себе, город, фото)
-    """
+Функция запроса вывода ника, пола, возраста, города, фото и предпочтений пользователя
+:param name:
+:param gender: пол искомого пользователя (мужчина, девушка, пара)
+:param age: возраст искомого пользователя
+:param preferences: предпочтения искомого пользователя (мужчина, девушка, пара)
+:return: список словарей подходящих пользователей (ник, возраст, информация о себе, город, фото)
+"""
     with conn.cursor(cursor_factory=psycopg2.extras.DictCursor) as cur:
-        cur.execute(
-            """SELECT nick_name, age, about_me, city, photo FROM users WHERE gender = %s AND age = %s AND preferences = %s""",
-            (gender, age, preferences))
-        res = cur.fetchall()
-        res_list = []
-        for row in res:
-            res_list.append(dict(row))
-        return res_list
+        cur.execute("""SELECT name FROM users Where name = %s""", (name,))
+        cur.fetchone()
+        if cur.fetchone():
+            cur.execute(
+                """SELECT nick_name, gender, age, about_me, city, photo FROM users WHERE gender = %s AND age = %s AND preferences = %s AND name = %s""",
+                (gender, age, preferences, name))
+            res = cur.fetchall()
+            res_list = []
+            for row in res:
+                res_list.append(dict(row))
+            return res_list
+        else:
+            return 'Подходящего варианта нет'
 
 
 user_gender = 'девушка'
 user_age = 31
 user_preferences = 'мужчина'
+user_name = 'Adia'
 
-pprint(request(user_gender, user_age, user_preferences))
+
+# pprint(request(user_gender, user_age, user_preferences, user_name))
 
 
 def search(name):
+    """
+    Функция запроса вывода ника, пола, возраста и предпочтений понравившегося пользователя
+    :param name:
+    :return:
+    """
     with conn.cursor(cursor_factory=psycopg2.extras.DictCursor) as cur:
         cur.execute(
             """SELECT gender, age, preferences, city FROM users WHERE name = %s""", (name,))
@@ -195,3 +212,22 @@ def search(name):
 user_name = 'Adia'
 
 # pprint(search(user_name))
+
+
+def search3(age: int, preferences: str, gender: str):
+    with conn.cursor(cursor_factory=psycopg2.extras.DictCursor) as cur:
+        cur.execute(
+            """SELECT nick_name, gender, age, about_me, city FROM users WHERE age BETWEEN (%s - 4) AND (%s + 4) 
+            AND gender = %s AND preferences = %s""", (age, age, preferences, gender))
+        res = cur.fetchall()
+        res_list = []
+        for row in res:
+            res_list.append(dict(row))
+        return res_list
+
+
+user_gender = 'девушка'
+user_age = 30
+user_preferences = 'мужчина'
+
+pprint(search3(user_age, user_preferences, user_gender))
