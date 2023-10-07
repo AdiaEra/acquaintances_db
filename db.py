@@ -26,32 +26,33 @@ with psycopg2.connect(database="acquaintances_db", user="postgres", password="Hu
             """
             cur.execute("""
                 CREATE TABLE IF NOT EXISTS users(
-                    users_id BIGINT PRIMARY KEY,
-                    name VARCHAR(40) NOT NULL,
+                    user_name VARCHAR(40) PRIMARY KEY,
+                    chat_id BIGINT NOT NULL,
                     nick_name VARCHAR(40),
                     age SMALLINT NOT NULL,
                     gender VARCHAR(10) NOT NULL,
-                    photo BYTEA,
+                    photo TEXT,
                     about_me TEXT NOT NULL,
                     preferences VARCHAR(10),
-                    city VARCHAR(30) NOT NULL
+                    city VARCHAR(30) NOT NULL,
+                    user_index INTEGER NOT NULL
                 );
                 CREATE TABLE IF NOT EXISTS blacklist(
-                    users_id BIGINT REFERENCES users(users_id)
+                    user_name VARCHAR(40) REFERENCES users(user_name)
                     ON DELETE CASCADE,
-                    not_liked_id BIGINT NOT NULL,
-                    UNIQUE (users_id, not_liked_id)
+                    not_liked_user VARCHAR(40) NOT NULL,
+                    UNIQUE (user_name, not_liked_user)
                 );
                 CREATE TABLE IF NOT EXISTS reviews_and_suggestions(
-                    users_id BIGINT REFERENCES users(users_id)
+                    user_name VARCHAR(40) REFERENCES users(user_name)
                     ON DELETE CASCADE,
                     description TEXT
                 );
                 CREATE TABLE IF NOT EXISTS user_liked(
-                    users_id BIGINT REFERENCES users(users_id)
+                    user_name VARCHAR(40) REFERENCES users(user_name)
                     ON DELETE CASCADE,
-                    liked_id BIGINT NOT NULL,
-                    UNIQUE (users_id, liked_id)
+                    liked_user VARCHAR(40) NOT NULL,
+                    UNIQUE (user_name, liked_user)
                 );
                 """)
             return 'База данных создана'

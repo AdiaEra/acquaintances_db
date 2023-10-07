@@ -7,12 +7,12 @@ import pandas as pd
 from db import conn
 
 
-def add_user(users_id: int, name: str, nick_name, age: int, gender: str, photo, about_me: str, preferences: str,
-             city: str):
+def add_user(user_name: str, chat_id: int, nick_name, age: int, gender: str, photo, about_me: str, preferences: str,
+             city: str, user_index: int):
     """
     Функция, позволяющая добавить нового пользователя в таблицу users
-    :param users_id: id пользователя
-    :param name: имя пользователя
+    :param user_name: имя пользователя
+    :param chat_id: id чата пользователя
     :param nick_name: ник пользователя
     :param age: возраст пользователя
     :param gender: пол пользователя (мужчина, девушка, пара)
@@ -20,35 +20,38 @@ def add_user(users_id: int, name: str, nick_name, age: int, gender: str, photo, 
     :param about_me: информатия пользователя о себе
     :param preferences: предпочтения пользователя (мужчина, девушка, пара)
     :param city: город, в котором проживает пользователь
-    :return: Новый пользователь добавлен (Пользователь с таким id уже есть в базе)
+    :param user_index: индекс пользователя
+    :return: Новый пользователь добавлен (Пользователь с таким user_name уже есть в базе)
     """
     with conn.cursor() as cur:
-        cur.execute("""SELECT users_id FROM users Where users_id = %s""", (users_id,))
+        cur.execute("""SELECT user_name FROM users Where user_name = %s""", (user_name,))
         cur.fetchone()
         if cur.fetchone() is None:
             try:
                 cur.execute("""
-                            INSERT INTO users (users_id, name, nick_name, age, gender, photo, about_me, preferences, city)
-                            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s);""",
-                            (users_id, name, nick_name, age, gender, photo, about_me, preferences, city))
+                            INSERT INTO users (user_name, chat_id, nick_name, age, gender, photo, about_me, preferences, city, user_index)
+                            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s);""",
+                            (
+                                user_name, chat_id, nick_name, age, gender, photo, about_me, preferences, city,
+                                user_index))
             except UniqueViolation:
-                return 'Пользователь с таким id уже есть в базе'
+                return 'Пользователь с таким user_name уже есть в базе'
         return 'Новый пользователь добавлен'
 
 
-user_id = 11113
-user_name = 'Миша'
-user_nick = 'ma@'
-user_age = 31
-user_gender = 'мужчина'
+us_name = 'Марина'
+user_chat_id = 7
+user_nick = 'mary'
+user_age = 37
+user_gender = 'девушка'
 user_photo = ''
-user_about_me = 'нравится слушать музыку'
-user_preferences = 'девушка'
-user_city = 'Калуга'
-
-# print(add_user(user_id, user_name, user_nick, user_age, user_gender, user_photo, user_about_me, user_preferences,
-#                user_city))
-conn.commit()
+user_about_me = 'нравится рисовать'
+user_preferences = 'мужчина'
+user_city = 'Кузнецк'
+us_index = 0
+# print(add_user(us_name, user_chat_id, user_nick, user_age, user_gender, user_photo, user_about_me, user_preferences,
+#                user_city, us_index))
+# conn.commit()
 
 
 def all_id_csv():
@@ -57,151 +60,115 @@ def all_id_csv():
     игнорировать предупреждение для подключения, отличного от SQLAlchemy
     смотрите: github.com/pandas-dev/pandas/issues/45660
     """
-    file = pd.read_sql('SELECT users_id FROM users', conn)
+    file = pd.read_sql('SELECT user_name FROM users', conn)
     file.to_csv('users.csv', index=False)
-    return 'id клиентов успешно записаны в файл csv'
+    return 'user_name клиентов успешно записаны в файл csv'
 
 
 # print(all_id_csv())
 
-def reviews(users_id: int, description: str):
+def reviews(user_name: str, description: str):
     """
     Функция для записи текста отзывов и предложений
-    :param users_id: id пользователя
+    :param user_name: имя пользователя
     :param description: текст отзыва и/или предложения
     :return: Информация в таблицу отзывов и предложений внесена
     """
     with conn.cursor() as cur:
         cur.execute("""
-            INSERT INTO reviews_and_suggestions(users_id, description)
-            VALUES (%s, %s);""", (users_id, description))
+            INSERT INTO reviews_and_suggestions(user_name, description)
+            VALUES (%s, %s);""", (user_name, description))
         return 'Информация в таблицу отзывов и предложений внесена'
 
 
-user_id = 111
+us_name = 'Марина'
 user_description = 'Ничего так приложение'
-
-# print(reviews(user_id, user_description))
+# print(reviews(us_name, user_description))
 conn.commit()
 
 
-def liked(users_id: int, liked_id: int):
+def liked(user_name: str, liked_user: str):
     """
     Функция для записи пары (пользователь, выполняющий запрос-пользователь, который понравился) в таблицу user_liked
-    :param users_id: пользователь, выполняющий запрос
-    :param liked_id: пользователь, который понравился
+    :param user_name: пользователь, выполняющий запрос
+    :param liked_user: пользователь, который понравился
     :return: Понравившийся пользователь добавлен (Такая пара уже существует)
     """
     with conn.cursor() as cur:
-        cur.execute("""SELECT users_id, liked_id FROM user_liked Where users_id = %s AND liked_id = %s""",
-                    (users_id, liked_id))
+        cur.execute("""SELECT user_name, liked_user FROM user_liked Where user_name = %s AND liked_user = %s""",
+                    (user_name, liked_user))
         cur.fetchone()
         if cur.fetchone() is None:
             try:
                 cur.execute("""
-                       INSERT INTO user_liked(users_id, liked_id)
-                       VALUES (%s, %s);""", (users_id, liked_id))
+                       INSERT INTO user_liked(user_name, liked_user)
+                       VALUES (%s, %s);""", (user_name, liked_user))
             except UniqueViolation:
                 return 'Такая пара уже существует'
         return 'Понравившийся пользователь добавлен'
 
 
-user_id = 111
-like_id = 44444444444444
-
-# print(liked(user_id, like_id))
+us_name = 'Настя'
+like_user = 'Миша'
+# print(liked(us_name, like_user))
 conn.commit()
 
 
-def not_liked(users_id: int, not_liked_id: int):
+def not_liked(user_name: str, not_liked_user: str):
     """
     Функция для записи пары (пользователь, выполняющий запрос-пользователь, который не понравился) в таблицу blacklist
-    :param users_id: пользователь, выполняющий запрос
-    :param not_liked_id: пользователь, который не понравился
+    :param user_name: пользователь, выполняющий запрос
+    :param not_liked_user: пользователь, который не понравился
     :return: Пользователь, которые не нравится добавлен (Такая пара уже существует)
     """
     with conn.cursor() as cur:
-        cur.execute("""SELECT users_id, not_liked_id FROM blacklist Where users_id = %s AND not_liked_id = %s""",
-                    (users_id, not_liked_id))
+        cur.execute("""SELECT user_name, not_liked_user FROM blacklist Where user_name = %s AND not_liked_user = %s""",
+                    (user_name, not_liked_user))
         cur.fetchone()
         if cur.fetchone() is None:
             try:
                 cur.execute("""
-                       INSERT INTO blacklist(users_id, not_liked_id)
-                       VALUES (%s, %s);""", (users_id, not_liked_id))
+                       INSERT INTO blacklist(user_name, not_liked_user)
+                       VALUES (%s, %s);""", (user_name, not_liked_user))
             except UniqueViolation:
                 return 'Такая пара уже существует'
         return 'Пользователь, которые не нравится добавлен'
 
 
-user_id = 111
-not_like_id = 111111111111111
-
-# print(not_liked(user_id, not_like_id))
+us_name = 'Один'
+not_like_us = 'Миша'
+# print(not_liked(us_name, not_like_us))
 conn.commit()
 
 
-def delete_user(users_id: int):
+def delete_user(user_name: str):
     """
     Функкция для удаления пользователя из таблицы users (каскадом удаляет всю информацию по данному пользователю из всех аблиц)
-    :param users_id: пользователь из таблицы users
-    :return: id пользователя удалён
+    :param user_name: пользователь из таблицы users
+    :return: пользователь удалён
     """
     with conn.cursor() as cur:
         cur.execute("""
-                    DELETE FROM users WHERE users_id = %s;""", (users_id,))
+                    DELETE FROM users WHERE user_name = %s;""", (user_name,))
         return 'Пользователь удалён из базы данных'
 
 
-user_id = 333333333
-
-# print(delete_user(user_id))
+us_name = 'Катя'
+# print(delete_user(us_name))
 conn.commit()
 
 
-def request(gender: str, age: int, preferences: str, name: str):
+#
+
+def search(user_name):
     """
-Функция запроса вывода ника, пола, возраста, города, фото и предпочтений пользователя
-:param name:
-:param gender: пол искомого пользователя (мужчина, девушка, пара)
-:param age: возраст искомого пользователя
-:param preferences: предпочтения искомого пользователя (мужчина, девушка, пара)
-:return: список словарей подходящих пользователей (ник, возраст, информация о себе, город, фото)
-"""
-    with conn.cursor(cursor_factory=psycopg2.extras.DictCursor) as cur:
-        cur.execute("""SELECT name FROM users Where name = %s""", (name,))
-        cur.fetchone()
-        if cur.fetchone():
-            cur.execute(
-                """SELECT nick_name, gender, age, about_me, city, photo FROM users WHERE gender = %s AND age = %s AND preferences = %s AND name = %s""",
-                (gender, age, preferences, name))
-            res = cur.fetchall()
-            res_list = []
-            for row in res:
-                res_list.append(dict(row))
-            return res_list
-        else:
-            return 'Подходящего варианта нет'
-
-
-user_gender = 'девушка'
-user_age = 31
-user_preferences = 'мужчина'
-user_name = 'Adia'
-
-
-# pprint(request(user_gender, user_age, user_preferences, user_name))
-
-
-def search(name):
-    """
-    Функция запроса вывода ника, пола, возраста и предпочтений понравившегося пользователя
-    :param name:
-    :return:
+    Функция запроса вывода пола, возраста и предпочтений пользователя
+    :param user_name: имя пользователя
+    :return: список со словарём (пол, возрвст, предпочтения рльзователя, ведущего поиск)
     """
     with conn.cursor(cursor_factory=psycopg2.extras.DictCursor) as cur:
         cur.execute(
-            """SELECT gender, age, preferences, city FROM users WHERE name = %s""", (name,))
+            """SELECT gender, age, preferences FROM users WHERE user_name = %s""", (user_name,))
         res = cur.fetchall()
         res_list = []
         for row in res:
@@ -209,15 +176,24 @@ def search(name):
         return res_list
 
 
-user_name = 'Adia'
+us_name = 'Локи'
 
-# pprint(search(user_name))
+
+# pprint(search(us_name))
 
 
 def search3(age: int, preferences: str, gender: str):
+    """
+    Функция запроса по выводу анкеты подходящих по параматрам пользователей (имя пользователя, ник, пол, информация о себе,
+    его предпочтения, город, фото)
+    :param age: возраст искомого кандидата
+    :param preferences: пол искомого кандидата
+    :param gender: предпочтения искомого кандидата
+    :return: список словарей с подходящими кандтдатами
+    """
     with conn.cursor(cursor_factory=psycopg2.extras.DictCursor) as cur:
         cur.execute(
-            """SELECT nick_name, gender, age, about_me, city FROM users WHERE age BETWEEN (%s - 4) AND (%s + 4) 
+            """SELECT user_name, nick_name, gender, age, about_me, preferences, city, photo FROM users WHERE age BETWEEN (%s - 4) AND (%s + 4)
             AND gender = %s AND preferences = %s""", (age, age, preferences, gender))
         res = cur.fetchall()
         res_list = []
@@ -226,8 +202,96 @@ def search3(age: int, preferences: str, gender: str):
         return res_list
 
 
-user_gender = 'девушка'
-user_age = 30
-user_preferences = 'мужчина'
+user_gender = 'мужчина'
+user_age = 34
+user_preferences = 'девушка'
 
-pprint(search3(user_age, user_preferences, user_gender))
+
+# pprint(search3(user_age, user_preferences, user_gender))
+
+
+def search_user(user_name):
+    """
+    Функция, которая проверяет по user_name есть ли такой пользователь в базе
+    :param user_name: имя пользователя
+    :return: имя пользователя либо None
+    """
+    with conn.cursor() as cur:
+        cur.execute("""SELECT user_name FROM users Where user_name = %s""", (user_name,))
+        return cur.fetchone()
+
+
+us_name = 'Валя'
+
+
+# print(search_user(us_name))
+
+
+def update_user_data(nick_name, age: int, gender: str, photo, about_me: str, preferences: str,
+                     city: str, user_name: str):
+    """
+
+    :param nick_name: ник пользователя
+    :param age: возраст пользователя
+    :param gender: пол пользователя(мужчина, девушка, пара)
+    :param photo: фото пользователя
+    :param about_me: информатия пользователя о себе
+    :param preferences: предпочтения пользователя(мужчина, девушка, пара)
+    :param city: город, в котором проживает пользователь
+    :param user_name: имя пользователя
+    :return: Данные пользователя обновлены
+    """
+    with conn.cursor() as cur:
+        cur.execute("""UPDATE users SET nick_name = %s, age = %s, gender = %s, photo = %s,
+                    about_me = %s, preferences = %s, city = %s WHERE user_name = %s""",
+                    (nick_name, age, gender, photo, about_me, preferences, city, user_name))
+        return 'Данные пользователя обновлены'
+
+
+us_name = 'Локи'
+user_nick = '@lok'
+user_age = 28
+user_gender = 'мужчина'
+user_photo = ''
+user_about_me = 'нравится рисовать'
+user_preferences = 'пара'
+user_city = 'Рим'
+print(
+    update_user_data(user_nick, user_age, user_gender, user_photo, user_about_me, user_preferences, user_city, us_name))
+conn.commit()
+
+# def serch4():
+#     with conn.cursor() as cur:
+#         if cur.execute("""SELECT
+#
+# us_name = 'Локи'
+# like_user = 'Настя'
+# print(serch4())
+
+
+#
+# user_gender = 'мужчина'
+# user_age = 32
+# user_preferences = 'девушка'
+# us_name = 'Локи'
+#
+#
+# pprint(request(user_gender, user_age, user_preferences, us_name))
+
+
+# def test(users_id: int, liked_id: int):
+#     with conn.cursor() as cur:
+#         cur.execute("""SELECT users_id, liked_id FROM user_liked WHERE users_id = %s AND liked_id = %s""",
+#                     (users_id, liked_id))
+#         cur.fetchone()
+#         if cur.fetchone():
+#             cur.execute("""SELECT users_id, liked_id FROM user_liked WHERE users_id = %s
+#                 AND liked_id = %s AND users_id = %s AND liked_id = %s""", (liked_id, users_id))
+#             return [users_id, liked_id]
+#         # else:
+#         #     return 'Совпадений нет'
+#
+#
+# user_id = 1
+# like_id = 2
+# print(test(like_id, user_id))
