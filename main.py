@@ -260,38 +260,3 @@ print(
     update_user_data(user_nick, user_age, user_gender, user_photo, user_about_me, user_preferences, user_city, us_name))
 conn.commit()
 
-# def serch4():
-#     with conn.cursor() as cur:
-#         if cur.execute("""SELECT
-#
-# us_name = 'Локи'
-# like_user = 'Настя'
-# print(serch4())
-
-
-#
-# user_gender = 'мужчина'
-# user_age = 32
-# user_preferences = 'девушка'
-# us_name = 'Локи'
-#
-#
-# pprint(request(user_gender, user_age, user_preferences, us_name))
-
-
-# def test(users_id: int, liked_id: int):
-#     with conn.cursor() as cur:
-#         cur.execute("""SELECT users_id, liked_id FROM user_liked WHERE users_id = %s AND liked_id = %s""",
-#                     (users_id, liked_id))
-#         cur.fetchone()
-#         if cur.fetchone():
-#             cur.execute("""SELECT users_id, liked_id FROM user_liked WHERE users_id = %s
-#                 AND liked_id = %s AND users_id = %s AND liked_id = %s""", (liked_id, users_id))
-#             return [users_id, liked_id]
-#         # else:
-#         #     return 'Совпадений нет'
-#
-#
-# user_id = 1
-# like_id = 2
-# print(test(like_id, user_id))
