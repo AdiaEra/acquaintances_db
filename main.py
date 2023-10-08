@@ -39,19 +39,19 @@ def add_user(user_name: str, chat_id: int, nick_name, age: int, gender: str, pho
         return 'Новый пользователь добавлен'
 
 
-us_name = 'Марина'
-user_chat_id = 7
-user_nick = 'mary'
-user_age = 37
-user_gender = 'девушка'
+us_name = 'Миша'
+user_chat_id = 3
+user_nick = 'mych'
+user_age = 27
+user_gender = 'мужчина'
 user_photo = ''
 user_about_me = 'нравится рисовать'
-user_preferences = 'мужчина'
-user_city = 'Кузнецк'
-us_index = 0
+user_preferences = 'девушка'
+user_city = 'Пенза'
+us_index = 1
 # print(add_user(us_name, user_chat_id, user_nick, user_age, user_gender, user_photo, user_about_me, user_preferences,
 #                user_city, us_index))
-# conn.commit()
+conn.commit()
 
 
 def all_id_csv():
@@ -108,9 +108,9 @@ def liked(user_name: str, liked_user: str):
         return 'Понравившийся пользователь добавлен'
 
 
-us_name = 'Настя'
+us_name = 'Макс'
 like_user = 'Миша'
-# print(liked(us_name, like_user))
+print(liked(us_name, like_user))
 conn.commit()
 
 
@@ -182,7 +182,7 @@ us_name = 'Локи'
 # pprint(search(us_name))
 
 
-def search3(age: int, preferences: str, gender: str):
+def data_of_liked_people(age: int, preferences: str, gender: str):
     """
     Функция запроса по выводу анкеты подходящих по параматрам пользователей (имя пользователя, ник, пол, информация о себе,
     его предпочтения, город, фото)
@@ -207,7 +207,7 @@ user_age = 34
 user_preferences = 'девушка'
 
 
-# pprint(search3(user_age, user_preferences, user_gender))
+# pprint(data_of_liked_people(user_age, user_preferences, user_gender))
 
 
 def search_user(user_name):
@@ -256,42 +256,60 @@ user_photo = ''
 user_about_me = 'нравится рисовать'
 user_preferences = 'пара'
 user_city = 'Рим'
-print(
-    update_user_data(user_nick, user_age, user_gender, user_photo, user_about_me, user_preferences, user_city, us_name))
+
+
+# print(
+#     update_user_data(user_nick, user_age, user_gender, user_photo, user_about_me, user_preferences, user_city, us_name))
+# conn.commit()
+
+
+def delete_user_liked(user_name):
+    """
+    Функция удаления понравившихся кандидатов по user_name
+    :param user_name: имя пользователя ведущего поиск
+    :return: Запись из табицы user_liked удалена
+    """
+    with conn.cursor() as cur:
+        cur.execute("""DELETE FROM user_liked WHERE user_name = %s;""", (user_name,))
+        return 'Запись из табицы user_liked удалена'
+
+
+us_name = 'Миша'
+# print(delete_user_liked(us_name))
 conn.commit()
 
-# def serch4():
-#     with conn.cursor() as cur:
-#         if cur.execute("""SELECT
-#
-# us_name = 'Локи'
-# like_user = 'Настя'
-# print(serch4())
+
+def update_index(user_name):
+    """
+    Функция, обнуляющая индекс по user_name
+    :param user_name: имя пользователя, ведущего поиск
+    :return: user_index обнулён
+    """
+    with conn.cursor() as cur:
+        cur.execute("""UPDATE users SET user_index = 0 WHERE user_name = %s""", (user_name,))
+        return 'user_index обнулён'
 
 
-#
-# user_gender = 'мужчина'
-# user_age = 32
-# user_preferences = 'девушка'
-# us_name = 'Локи'
-#
-#
-# pprint(request(user_gender, user_age, user_preferences, us_name))
+us_name = 'Миша'
+# print(update_index(us_name))
+conn.commit()
 
 
-# def test(users_id: int, liked_id: int):
-#     with conn.cursor() as cur:
-#         cur.execute("""SELECT users_id, liked_id FROM user_liked WHERE users_id = %s AND liked_id = %s""",
-#                     (users_id, liked_id))
-#         cur.fetchone()
-#         if cur.fetchone():
-#             cur.execute("""SELECT users_id, liked_id FROM user_liked WHERE users_id = %s
-#                 AND liked_id = %s AND users_id = %s AND liked_id = %s""", (liked_id, users_id))
-#             return [users_id, liked_id]
-#         # else:
-#         #     return 'Совпадений нет'
-#
-#
-# user_id = 1
-# like_id = 2
-# print(test(like_id, user_id))
+def list_liked_users(user_name):
+    """
+    Функция получения списка понравившихся людей по определённому пользователю
+    :param user_name: имя пользователя
+    :return: список понравившихся людей
+    """
+    with conn.cursor() as cur:
+        cur.execute("""SELECT liked_user FROM user_liked WHERE user_name = %s""", (user_name,))
+        list_1 = []
+        for i in cur.fetchall():
+            for item in i:
+                list_1.append(item)
+        return list_1
+
+
+us_name = 'Миша'
+# print(list_liked_users(us_name))
+
