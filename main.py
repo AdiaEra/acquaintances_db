@@ -182,7 +182,7 @@ us_name = 'Локи'
 # pprint(search(us_name))
 
 
-def search3(age: int, preferences: str, gender: str):
+def data_of_liked_people(age: int, preferences: str, gender: str):
     """
     Функция запроса по выводу анкеты подходящих по параматрам пользователей (имя пользователя, ник, пол, информация о себе,
     его предпочтения, город, фото)
@@ -207,7 +207,7 @@ user_age = 34
 user_preferences = 'девушка'
 
 
-# pprint(search3(user_age, user_preferences, user_gender))
+# pprint(data_of_liked_people(user_age, user_preferences, user_gender))
 
 
 def search_user(user_name):
