@@ -260,3 +260,53 @@ print(
     update_user_data(user_nick, user_age, user_gender, user_photo, user_about_me, user_preferences, user_city, us_name))
 conn.commit()
 
+
+def delete_user_liked(user_name):
+    """
+    Функция удаления понравившихся кандидатов по user_name
+    :param user_name: имя пользователя ведущего поиск
+    :return: Запись из табицы user_liked удалена
+    """
+    with conn.cursor() as cur:
+        cur.execute("""DELETE FROM user_liked WHERE user_name = %s;""", (user_name,))
+        return 'Запись из табицы user_liked удалена'
+
+
+us_name = 'Миша'
+# print(delete_user_liked(us_name))
+conn.commit()
+
+
+def update_index(user_name):
+    """
+    Функция, обнуляющая индекс по user_name
+    :param user_name: имя пользователя, ведущего поиск
+    :return: user_index обнулён
+    """
+    with conn.cursor() as cur:
+        cur.execute("""UPDATE users SET user_index = 0 WHERE user_name = %s""", (user_name,))
+        return 'user_index обнулён'
+
+
+us_name = 'Миша'
+# print(update_index(us_name))
+conn.commit()
+
+
+def list_liked_users(user_name):
+    """
+    Функция получения списка понравившихся людей по определённому пользователю
+    :param user_name: имя пользователя
+    :return: список понравившихся людей
+    """
+    with conn.cursor() as cur:
+        cur.execute("""SELECT liked_user FROM user_liked WHERE user_name = %s""", (user_name,))
+        list_1 = []
+        for i in cur.fetchall():
+            for item in i:
+                list_1.append(item)
+        return list_1
+
+
+us_name = 'Миша'
+# print(list_liked_users(us_name))
