@@ -313,3 +313,36 @@ def list_liked_users(user_name):
 us_name = 'Миша'
 # print(list_liked_users(us_name))
 
+def delete_not_liked_user(user_name):
+    """
+    Функция удаления понравившихся кандидатов по user_name
+    :param user_name: имя пользователя ведущего поиск
+    :return: Запись из табицы blacklist удалена
+    """
+    with conn.cursor() as cur:
+        cur.execute("""DELETE FROM blacklist WHERE user_name = %s;""", (user_name,))
+        return 'Запись из табицы blacklist удалена'
+
+
+us_name = 'Миша'
+print(delete_not_liked_user(us_name))
+conn.commit()
+
+
+def list_not_liked_users(user_name):
+    """
+    Функция получения списка непонравившихся людей по определённому пользователю
+    :param user_name: имя пользователя
+    :return: список непонравившихся людей
+    """
+    with conn.cursor() as cur:
+        cur.execute("""SELECT not_liked_user FROM blacklist WHERE user_name = %s""", (user_name,))
+        list_1 = []
+        for i in cur.fetchall():
+            for item in i:
+                list_1.append(item)
+        return list_1
+
+
+us_name = 'Миша'
+# print(list_not_liked_users(us_name))
