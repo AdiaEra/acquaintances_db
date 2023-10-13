@@ -475,3 +475,72 @@ us_name = 'Миша'
 user_city = 'Москва'
 # print(update_city(user_city, us_name))
 conn.commit()
+
+
+def update_preferences_age(preferences_age: int, user_name: str):
+    """
+    Функция обновления предпочтительного возраста искомого кандидата
+    :param preferences_age: предпочтительный возраст искомого кандидата
+    :param user_name: имя пользователя
+    :return: Предпочтительный возраст искомого кандидата обновлён
+    """
+    with conn.cursor() as cur:
+        cur.execute("""UPDATE users SET preferences_age = %s WHERE user_name = %s""", (preferences_age, user_name,))
+        return 'Предпочтительный возраст искомого кандидата обновлён'
+
+
+us_name = 'Миша'
+user_preferences_age = 36
+# print(update_preferences_age(user_preferences_age, us_name))
+conn.commit()
+
+
+def add_user_test(user_name: str, chat_id: int, nick_name, age: int, gender: str, photo, about_me: str,
+                  preferences: str,
+                  city: str, user_index: int, preferences_age: int):
+    """
+    Функция, позволяющая добавить нового пользователя в таблицу users
+    :param user_name: имя пользователя
+    :param chat_id: id чата пользователя
+    :param nick_name: ник пользователя
+    :param age: возраст пользователя
+    :param gender: пол пользователя (мужчина, девушка, пара)
+    :param photo: фото пользователя
+    :param about_me: информатия пользователя о себе
+    :param preferences: предпочтения пользователя (мужчина, девушка, пара)
+    :param city: город, в котором проживает пользователь
+    :param user_index: индекс пользователя
+    :param preferences_age: предпочтительный возраст искомого кандидата
+    :return: Новый пользователь добавлен (Пользователь с таким user_name уже есть в базе)
+    """
+    with conn.cursor() as cur:
+        cur.execute("""SELECT user_name FROM users Where user_name = %s""", (user_name,))
+        cur.fetchone()
+        if cur.fetchone() is None:
+            try:
+                cur.execute("""
+                            INSERT INTO users (user_name, chat_id, nick_name, age, gender, photo, about_me, preferences, city, user_index, preferences_age)
+                            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);""",
+                            (
+                                user_name, chat_id, nick_name, age, gender, photo, about_me, preferences, city,
+                                user_index, preferences_age))
+            except UniqueViolation:
+                return 'Пользователь с таким user_name уже есть в базе'
+        return 'Новый пользователь добавлен'
+
+
+us_name = 'Маруся'
+user_chat_id = 12
+user_nick = 'myc'
+user_age = 34
+user_gender = 'девушка'
+user_photo = ''
+user_about_me = 'нравится рисовать'
+user_preferences = 'мужчина'
+user_city = 'Орёл'
+us_index = 5
+user_preferences_age = 23
+# print(
+# add_user_test(us_name, user_chat_id, user_nick, user_age, user_gender, user_photo, user_about_me, user_preferences,
+#               user_city, us_index, user_preferences_age))
+conn.commit()

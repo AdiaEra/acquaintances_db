@@ -59,3 +59,11 @@ with psycopg2.connect(database="acquaintances_db", user="postgres", password="Hu
 
         # print(create_db())
         conn.commit()
+
+
+        def add_column():
+            cur.execute("""ALTER TABLE users ADD COLUMN preferences_age INTEGER""")
+            return 'Столбец preferences_age добавлен'
+
+        # print(add_column())
+        conn.commit()
