@@ -110,7 +110,7 @@ def liked(user_name: str, liked_user: str):
 
 us_name = 'Макс'
 like_user = 'Миша'
-print(liked(us_name, like_user))
+# print(liked(us_name, like_user))
 conn.commit()
 
 
@@ -311,6 +311,8 @@ def list_liked_users(user_name):
 
 
 us_name = 'Миша'
+
+
 # print(list_liked_users(us_name))
 
 def delete_not_liked_user(user_name):
@@ -325,7 +327,7 @@ def delete_not_liked_user(user_name):
 
 
 us_name = 'Миша'
-print(delete_not_liked_user(us_name))
+# print(delete_not_liked_user(us_name))
 conn.commit()
 
 
@@ -345,4 +347,131 @@ def list_not_liked_users(user_name):
 
 
 us_name = 'Миша'
+
+
 # print(list_not_liked_users(us_name))
+
+def update_nick_name(nick_name: str, user_name: str):
+    """
+    Функция обновления ника пользователя
+    :param nick_name: ник пользователя
+    :param user_name: имя пользователя
+    :return: Ник пользователя обновлён
+    """
+    with conn.cursor() as cur:
+        cur.execute("""UPDATE users SET nick_name = %s WHERE user_name = %s""", (nick_name, user_name,))
+        return 'Ник пользователя обновлён'
+
+
+us_name = 'Миша'
+user_nick = 'mychan'
+# print(update_nick_name(user_nick, us_name))
+conn.commit()
+
+
+def update_age(age: int, user_name: str):
+    """
+    Функция обновления возраста пользователя
+    :param age: возраст пользователя
+    :param user_name: имя пользователя
+    :return: Возраст пользователя обновлён
+    """
+    with conn.cursor() as cur:
+        cur.execute("""UPDATE users SET age = %s WHERE user_name = %s""", (age, user_name,))
+        return 'Возраст пользователя обновлён'
+
+
+us_name = 'Миша'
+user_age = 23
+# print(update_age(user_age, us_name))
+conn.commit()
+
+
+def update_gender(gender: str, user_name: str):
+    """
+    Функция обновления пола пользователя
+    :param gender: пол пользователя
+    :param user_name: имя пользователя
+    :return: Пол пользователя обновлён
+    """
+    with conn.cursor() as cur:
+        cur.execute("""UPDATE users SET gender = %s WHERE user_name = %s""", (gender, user_name,))
+        return 'Пол пользователя обновлён'
+
+
+us_name = 'Миша'
+user_gender = 'девушка'
+# print(update_gender(user_gender, us_name))
+conn.commit()
+
+
+def update_photo(photo: str, user_name: str):
+    """
+    Функция обновления фото пользователя
+    :param photo: ссылка на фото пользователя
+    :param user_name: имя пользователя
+    :return:
+    """
+    with conn.cursor() as cur:
+        cur.execute("""UPDATE users SET photo = %s WHERE user_name = %s""", (photo, user_name,))
+        return 'Фото пользователя обновлёно'
+
+
+us_name = 'Миша'
+user_photo = 'err'
+# print(update_photo(user_photo, us_name))
+conn.commit()
+
+
+def update_about_me(about_me: str, user_name: str):
+    """
+    Функция обновления пользователем информации о себе
+    :param about_me: информация о себе
+    :param user_name: имя пользователя
+    :return:
+    """
+    with conn.cursor() as cur:
+        cur.execute("""UPDATE users SET about_me = %s WHERE user_name = %s""", (about_me, user_name,))
+        return 'Информация пользователя о себе обновлена'
+
+
+us_name = 'Миша'
+user_about_me = 'Тащусь от комиксов'
+# print(update_about_me(user_about_me, us_name))
+conn.commit()
+
+
+def update_preferences(preferences: str, user_name: str):
+    """
+    Функция обновления предпочтения пользователя
+    :param preferences: предпочтения пользователя
+    :param user_name: имя пользователя
+    :return: Предпочтения пользователя обновлены
+    """
+    with conn.cursor() as cur:
+        cur.execute("""UPDATE users SET preferences = %s WHERE user_name = %s""", (preferences, user_name,))
+        return 'Предпочтения пользователя обновлены'
+
+
+us_name = 'Миша'
+user_preferences = 'пара'
+# print(update_preferences(user_preferences, us_name))
+conn.commit()
+
+
+def update_city(city: str, user_name: str):
+    """
+    Функция обновления города пользователя
+    :param city: город
+    :param user_name: имя пользователя
+    :return: Город пользователя обновлён
+    """
+    with conn.cursor() as cur:
+        cur.execute("""UPDATE users SET city = %s WHERE user_name = %s""", (city, user_name,))
+        return 'Город пользователя обновлён'
+
+
+us_name = 'Миша'
+user_city = 'Москва'
+# print(update_city(user_city, us_name))
+conn.commit()
