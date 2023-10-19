@@ -7,51 +7,51 @@ import pandas as pd
 from db import conn
 
 
-def add_user(user_name: str, chat_id: int, nick_name, age: int, gender: str, photo, about_me: str, preferences: str,
-             city: str, user_index: int):
-    """
-    Функция, позволяющая добавить нового пользователя в таблицу users
-    :param user_name: имя пользователя
-    :param chat_id: id чата пользователя
-    :param nick_name: ник пользователя
-    :param age: возраст пользователя
-    :param gender: пол пользователя (мужчина, девушка, пара)
-    :param photo: фото пользователя
-    :param about_me: информатия пользователя о себе
-    :param preferences: предпочтения пользователя (мужчина, девушка, пара)
-    :param city: город, в котором проживает пользователь
-    :param user_index: индекс пользователя
-    :return: Новый пользователь добавлен (Пользователь с таким user_name уже есть в базе)
-    """
-    with conn.cursor() as cur:
-        cur.execute("""SELECT user_name FROM users Where user_name = %s""", (user_name,))
-        cur.fetchone()
-        if cur.fetchone() is None:
-            try:
-                cur.execute("""
-                            INSERT INTO users (user_name, chat_id, nick_name, age, gender, photo, about_me, preferences, city, user_index)
-                            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s);""",
-                            (
-                                user_name, chat_id, nick_name, age, gender, photo, about_me, preferences, city,
-                                user_index))
-            except UniqueViolation:
-                return 'Пользователь с таким user_name уже есть в базе'
-        return 'Новый пользователь добавлен'
-
-
-us_name = 'Миша'
-user_chat_id = 3
-user_nick = 'mych'
-user_age = 27
-user_gender = 'мужчина'
-user_photo = ''
-user_about_me = 'нравится рисовать'
-user_preferences = 'девушка'
-user_city = 'Пенза'
-us_index = 1
-# print(add_user(us_name, user_chat_id, user_nick, user_age, user_gender, user_photo, user_about_me, user_preferences,
-#                user_city, us_index))
-conn.commit()
+# def add_user(user_name: str, chat_id: int, nick_name, age: int, gender: str, photo, about_me: str, preferences: str,
+#              city: str, user_index: int):
+#     """
+#     Функция, позволяющая добавить нового пользователя в таблицу users
+#     :param user_name: имя пользователя
+#     :param chat_id: id чата пользователя
+#     :param nick_name: ник пользователя
+#     :param age: возраст пользователя
+#     :param gender: пол пользователя (мужчина, девушка, пара)
+#     :param photo: фото пользователя
+#     :param about_me: информатия пользователя о себе
+#     :param preferences: предпочтения пользователя (мужчина, девушка, пара)
+#     :param city: город, в котором проживает пользователь
+#     :param user_index: индекс пользователя
+#     :return: Новый пользователь добавлен (Пользователь с таким user_name уже есть в базе)
+#     """
+#     with conn.cursor() as cur:
+#         cur.execute("""SELECT user_name FROM users Where user_name = %s""", (user_name,))
+#         cur.fetchone()
+#         if cur.fetchone() is None:
+#             try:
+#                 cur.execute("""
+#                             INSERT INTO users (user_name, chat_id, nick_name, age, gender, photo, about_me, preferences, city, user_index)
+#                             VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s);""",
+#                             (
+#                                 user_name, chat_id, nick_name, age, gender, photo, about_me, preferences, city,
+#                                 user_index))
+#             except UniqueViolation:
+#                 return 'Пользователь с таким user_name уже есть в базе'
+#         return 'Новый пользователь добавлен'
+#
+#
+# us_name = 'Миша'
+# user_chat_id = 3
+# user_nick = 'mych'
+# user_age = 27
+# user_gender = 'мужчина'
+# user_photo = ''
+# user_about_me = 'нравится рисовать'
+# user_preferences = 'девушка'
+# user_city = 'Пенза'
+# us_index = 1
+# # print(add_user(us_name, user_chat_id, user_nick, user_age, user_gender, user_photo, user_about_me, user_preferences,
+# #                user_city, us_index))
+# conn.commit()
 
 
 def all_id_csv():
@@ -81,7 +81,7 @@ def reviews(user_name: str, description: str):
         return 'Информация в таблицу отзывов и предложений внесена'
 
 
-us_name = 'Марина'
+us_name = 'Маруся'
 user_description = 'Ничего так приложение'
 # print(reviews(us_name, user_description))
 conn.commit()
@@ -108,7 +108,7 @@ def liked(user_name: str, liked_user: str):
         return 'Понравившийся пользователь добавлен'
 
 
-us_name = 'Макс'
+us_name = 'Маруся'
 like_user = 'Миша'
 # print(liked(us_name, like_user))
 conn.commit()
@@ -135,7 +135,7 @@ def not_liked(user_name: str, not_liked_user: str):
         return 'Пользователь, которые не нравится добавлен'
 
 
-us_name = 'Один'
+us_name = 'Маруся'
 not_like_us = 'Миша'
 # print(not_liked(us_name, not_like_us))
 conn.commit()
@@ -155,7 +155,7 @@ def delete_user(user_name: str):
 
 us_name = 'Катя'
 # print(delete_user(us_name))
-conn.commit()
+# conn.commit()
 
 
 #
@@ -164,7 +164,7 @@ def search(user_name):
     """
     Функция запроса вывода пола, возраста и предпочтений пользователя
     :param user_name: имя пользователя
-    :return: список со словарём (пол, возрвст, предпочтения рльзователя, ведущего поиск)
+    :return: список со словарём (пол, возраст, предпочтения пользователя, ведущего поиск)
     """
     with conn.cursor(cursor_factory=psycopg2.extras.DictCursor) as cur:
         cur.execute(
@@ -228,9 +228,9 @@ us_name = 'Валя'
 
 
 def update_user_data(nick_name, age: int, gender: str, photo, about_me: str, preferences: str,
-                     city: str, user_name: str):
+                     city: str, preferences_age: int, user_name: str):
     """
-
+    Функция обновления данных в таблице users
     :param nick_name: ник пользователя
     :param age: возраст пользователя
     :param gender: пол пользователя(мужчина, девушка, пара)
@@ -238,17 +238,18 @@ def update_user_data(nick_name, age: int, gender: str, photo, about_me: str, pre
     :param about_me: информатия пользователя о себе
     :param preferences: предпочтения пользователя(мужчина, девушка, пара)
     :param city: город, в котором проживает пользователь
+    :param preferences_age: предпочтительный возраст искомого кандидата
     :param user_name: имя пользователя
     :return: Данные пользователя обновлены
     """
     with conn.cursor() as cur:
         cur.execute("""UPDATE users SET nick_name = %s, age = %s, gender = %s, photo = %s,
-                    about_me = %s, preferences = %s, city = %s WHERE user_name = %s""",
-                    (nick_name, age, gender, photo, about_me, preferences, city, user_name))
+                    about_me = %s, preferences = %s, city = %s, preferences_age = %s WHERE user_name = %s""",
+                    (nick_name, age, gender, photo, about_me, preferences, city, preferences_age, user_name))
         return 'Данные пользователя обновлены'
 
 
-us_name = 'Локи'
+us_name = 'Коля'
 user_nick = '@lok'
 user_age = 28
 user_gender = 'мужчина'
@@ -256,11 +257,12 @@ user_photo = ''
 user_about_me = 'нравится рисовать'
 user_preferences = 'пара'
 user_city = 'Рим'
-
+us_preferences_age = 32
 
 # print(
-#     update_user_data(user_nick, user_age, user_gender, user_photo, user_about_me, user_preferences, user_city, us_name))
-# conn.commit()
+#     update_user_data(user_nick, user_age, user_gender, user_photo, user_about_me, user_preferences, user_city,
+#                      us_preferences_age, us_name))
+conn.commit()
 
 
 def delete_user_liked(user_name):
@@ -545,6 +547,7 @@ user_preferences_age = 23
 #               user_city, us_index, user_preferences_age))
 conn.commit()
 
+
 def delete_from_blacklist():
     """
     Функция удаления понравившихся кандидатов по user_name
@@ -572,6 +575,7 @@ def delete_from_user_liked():
 # print(delete_from_user_liked())
 conn.commit()
 
+
 def delete_all_users_index():
     """
     Функция удаления понравившихся кандидатов по user_name
@@ -583,4 +587,18 @@ def delete_all_users_index():
 
 
 # print(delete_all_users_index())
+conn.commit()
+
+
+def delete_from_users():
+    """
+    Функция удаления анкет пользоваталей из таблицы users
+    :return: Табица users очищена
+    """
+    with conn.cursor() as cur:
+        cur.execute("""DELETE FROM users""")
+        return 'Табица users очищена'
+
+
+# print(delete_from_users())
 conn.commit()
