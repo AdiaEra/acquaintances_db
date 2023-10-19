@@ -544,3 +544,43 @@ user_preferences_age = 23
 # add_user_test(us_name, user_chat_id, user_nick, user_age, user_gender, user_photo, user_about_me, user_preferences,
 #               user_city, us_index, user_preferences_age))
 conn.commit()
+
+def delete_from_blacklist():
+    """
+    Функция удаления понравившихся кандидатов по user_name
+    :return: Табица blacklist очищена
+    """
+    with conn.cursor() as cur:
+        cur.execute("""DELETE FROM blacklist""")
+        return 'Табица blacklist очищена'
+
+
+# print(delete_from_blacklist())
+conn.commit()
+
+
+def delete_from_user_liked():
+    """
+    Функция удаления понравившихся кандидатов по user_name
+    :return: Табица user_liked очищена
+    """
+    with conn.cursor() as cur:
+        cur.execute("""DELETE FROM user_liked""")
+        return 'Табица user_liked очищена'
+
+
+# print(delete_from_user_liked())
+conn.commit()
+
+def delete_all_users_index():
+    """
+    Функция удаления понравившихся кандидатов по user_name
+    :return: Индексы в столбце user_index обнулены
+    """
+    with conn.cursor() as cur:
+        cur.execute("""UPDATE users SET user_index = 0""")
+        return 'Индексы в столбце user_index обнулены'
+
+
+# print(delete_all_users_index())
+conn.commit()
