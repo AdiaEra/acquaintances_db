@@ -172,14 +172,14 @@ def search(user_name):
         cur.execute(
             """SELECT gender, age, preferences FROM users WHERE user_name = %s""", (user_name,))
         res = cur.fetchall()
-        res_list = []
-        for row in res:
-            res_list.append(dict(row))
+        res_list = [dict(row) for row in res]
+        # res_list = []
+        # for row in res:
+        #     res_list.append(dict(row))
         return res_list
 
 
-us_name = 'Локи'
-
+us_name = 'Миша'
 
 # pprint(search(us_name))
 
@@ -198,15 +198,16 @@ def data_of_liked_people(age: int, preferences: str, gender: str):
             """SELECT user_name, nick_name, gender, age, about_me, preferences, city, photo FROM users WHERE age BETWEEN (%s - 4) AND (%s + 4)
             AND gender = %s AND preferences = %s""", (age, age, preferences, gender))
         res = cur.fetchall()
-        res_list = []
-        for row in res:
-            res_list.append(dict(row))
+        res_list = [dict(row) for row in res]
+        # res_list = []
+        # for row in res:
+        #     res_list.append(dict(row))
         return res_list
 
 
-user_gender = 'мужчина'
+user_gender = 'девушка'
 user_age = 34
-user_preferences = 'девушка'
+user_preferences = 'мужчина'
 
 
 # pprint(data_of_liked_people(user_age, user_preferences, user_gender))
@@ -620,3 +621,4 @@ def list_id():
 
 
 # print(list_id())
+
