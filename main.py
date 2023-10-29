@@ -154,6 +154,8 @@ def delete_user(user_name: str):
 
 
 us_name = 'Катя'
+
+
 # print(delete_user(us_name))
 # conn.commit()
 
@@ -305,6 +307,7 @@ def list_liked_users(user_name):
     """
     with conn.cursor() as cur:
         cur.execute("""SELECT liked_user FROM user_liked WHERE user_name = %s""", (user_name,))
+        # list_1 = [item for i in cur.fetchall() for item in i]
         list_1 = []
         for i in cur.fetchall():
             for item in i:
@@ -341,6 +344,7 @@ def list_not_liked_users(user_name):
     """
     with conn.cursor() as cur:
         cur.execute("""SELECT not_liked_user FROM blacklist WHERE user_name = %s""", (user_name,))
+        # list_1 = [item for i in cur.fetchall() for item in i]
         list_1 = []
         for i in cur.fetchall():
             for item in i:
@@ -531,8 +535,8 @@ def add_user_test(user_name: str, chat_id: int, nick_name, age: int, gender: str
         return 'Новый пользователь добавлен'
 
 
-us_name = 'Маруся'
-user_chat_id = 12
+us_name = 'Миша'
+user_chat_id = 11
 user_nick = 'myc'
 user_age = 34
 user_gender = 'девушка'
@@ -602,3 +606,17 @@ def delete_from_users():
 
 # print(delete_from_users())
 conn.commit()
+
+
+def list_id():
+    """
+    Функция получает список id чатов пользователей
+    :return: список id чатов
+    """
+    with conn.cursor() as cur:
+        cur.execute("""SELECT chat_id FROM users""")
+        list_1 = [item for i in cur.fetchall() for item in i]
+        return list_1
+
+
+# print(list_id())
